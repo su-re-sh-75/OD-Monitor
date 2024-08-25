@@ -1,2 +1,4 @@
 *.json
 env/
+*.pdf
+__pycache__/
