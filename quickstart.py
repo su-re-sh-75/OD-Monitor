@@ -90,7 +90,6 @@ def export_pdf(file_obj):
 		while done is False:
 			status, done = downloader.next_chunk()
 			print(f"{int(status.progress() * 100)}", end=' ')
-
 	except HttpError as error:
 		print(f"An error occurred: {error}")
 		file = None
@@ -104,7 +103,7 @@ def main():
 	folder = search_file("name = 'Placements OD List' and mimeType = 'application/vnd.google-apps.folder'")[0]
 	files = search_file(f"'{folder.get('id')}' in parents and mimeType != 'application/vnd.google-apps.folder'")
 	create_local_folder()
-	export_pdf(files[0].get('id'), files[0].get('name'))
+	export_pdf(files[0])
 
 if __name__ == "__main__":
 	main()
