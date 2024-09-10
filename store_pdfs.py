@@ -87,15 +87,13 @@ def export_pdf(file_obj):
 		print(f"Downloading: {file_obj.get('name')}")
 		while not done:
 			status, done = downloader.next_chunk()
-			print(f"{int(status.progress() * 100)}%", end=' ')
-		print()
+			# print(f"{int(status.progress() * 100)}%", end=' ')
 	except HttpError as error:
 		print(f"An error occurred: {error}")
 		file = None
 	file_path = os.path.join('All ODs', file_obj.get('name'))
 	with open(file_path, 'wb') as bin_file:
 		bin_file.write(file.getvalue())
-	return f"Downloaded file {file_obj.get('name')}"
 
 def download_files(needed_pc):
 	authorize()
@@ -109,9 +107,9 @@ def download_files(needed_pc):
 	create_local_folder()
 	file_set = frozenset(os.listdir('All ODs'))
 
-	for file in files[:5]:
+	for file in files:
 		if file.get('name') in file_set:
-			print(f'{file.get('name')} is already downloaded. So skipping..')
+			print(f'{file.get('name')} is already downloaded. So skipped.. ')
 			continue
 		if not needed_pc and "PC" not in file.get('name').upper():
 			export_pdf(file)
