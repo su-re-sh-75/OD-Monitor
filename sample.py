@@ -1,10 +1,6 @@
-import time
-import pytz  
-from datetime import datetime
+import sys
 
-dt = datetime.now()
-timezone_ind= pytz.timezone('Asia/Kolkata')  
-ist_local = timezone_ind.localize(datetime.now())  
-print("Indian Standard Time:", ist_local.strftime("%d/%m/%Y, %H:%M:%S"))
-
-print(dt.strftime("%d/%m/%Y"))
+# print(sys.getsizeof(1))
+var = True
+print(sys.getsizeof(var))
+# print(1 << 224)

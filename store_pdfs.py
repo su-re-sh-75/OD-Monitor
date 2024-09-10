@@ -84,10 +84,11 @@ def export_pdf(file_obj):
 		file = io.BytesIO()
 		downloader = MediaIoBaseDownload(file, request)
 		done = False
-		print("Downloading: ")
-		while done is False:
+		print(f"Downloading: {file_obj.get('name')}")
+		while not done:
 			status, done = downloader.next_chunk()
-			print(f"{int(status.progress() * 100)}", end=' ')
+			print(f"{int(status.progress() * 100)}%", end=' ')
+		print()
 	except HttpError as error:
 		print(f"An error occurred: {error}")
 		file = None
@@ -96,13 +97,28 @@ def export_pdf(file_obj):
 		bin_file.write(file.getvalue())
 	return f"Downloaded file {file_obj.get('name')}"
 
-def download_files():
+def download_files(needed_pc):
 	authorize()
 	folder = search_file("name = 'Placements OD List' and mimeType = 'application/vnd.google-apps.folder'")[0]
+	without_sign_folder = search_file(f"'{folder.get('id')}' in parents and name = 'Without Sign' and mimeType = 'application/vnd.google-apps.folder'")[0]
+	
 	files = search_file(f"'{folder.get('id')}' in parents and mimeType != 'application/vnd.google-apps.folder'")
+	without_sign_files = search_file(f"'{without_sign_folder.get('id')}' in parents and mimeType != 'application/vnd.google-apps.folder'")
+	without_sign_files = list(filter(lambda x: x.get('name').endswith('.pdf'), without_sign_files))
+	files.extend(without_sign_files)
 	create_local_folder()
-	for file in files[:2]:
-		export_pdf(file)
+	file_set = frozenset(os.listdir('All ODs'))
+
+	for file in files[:5]:
+		if file.get('name') in file_set:
+			print(f'{file.get('name')} is already downloaded. So skipping..')
+			continue
+		if not needed_pc and "PC" not in file.get('name').upper():
+			export_pdf(file)
+		elif needed_pc:
+			export_pdf(file)
+
 
 if __name__ == "__main__":
-	download_files()
+	need_pc = input("Do you want to check PC ODs also?[Y/N/y/n]\nchoice: ").lower() == 'y'
+	download_files(need_pc)
