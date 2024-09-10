@@ -8,6 +8,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+'''Download PDF files from "Placements OD List" from GDrive and Store in "All ODs"'''
+
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 user_credentials = None
@@ -42,7 +44,6 @@ def authorize():
 def search_file(query):
 	"""Search file in drive location"""
 	global user_credentials
-
 	try:
 		service = build("drive", "v3", credentials=user_credentials)
 		files = []
@@ -58,9 +59,6 @@ def search_file(query):
 				)
 				.execute()
 			)
-			# for file in response.get("files", []):
-				# print(f'Found: {file.get("name")}, {file.get("id")}')
-				# print(file)
 			files.extend(response.get("files", []))
 			page_token = response.get("nextPageToken", None)
 			if page_token is None:
@@ -93,17 +91,18 @@ def export_pdf(file_obj):
 	except HttpError as error:
 		print(f"An error occurred: {error}")
 		file = None
-	file_path = os.path.join(os.getcwd(), file_obj.get('name'))
+	file_path = os.path.join('All ODs', file_obj.get('name'))
 	with open(file_path, 'wb') as bin_file:
 		bin_file.write(file.getvalue())
 	return f"Downloaded file {file_obj.get('name')}"
 
-def main():
+def download_files():
 	authorize()
 	folder = search_file("name = 'Placements OD List' and mimeType = 'application/vnd.google-apps.folder'")[0]
 	files = search_file(f"'{folder.get('id')}' in parents and mimeType != 'application/vnd.google-apps.folder'")
 	create_local_folder()
-	export_pdf(files[0])
+	for file in files[:2]:
+		export_pdf(file)
 
 if __name__ == "__main__":
-	main()
+	download_files()
