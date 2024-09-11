@@ -105,7 +105,7 @@ def download_files(needed_pc):
 	without_sign_files = list(filter(lambda x: x.get('name').endswith('.pdf'), without_sign_files))
 	files.extend(without_sign_files)
 	create_local_folder()
-	file_set = frozenset(os.listdir('All ODs'))
+	file_set = set(os.listdir('All ODs'))
 
 	for file in files:
 		if file.get('name') in file_set:
@@ -116,7 +116,3 @@ def download_files(needed_pc):
 		elif needed_pc:
 			export_pdf(file)
 
-
-if __name__ == "__main__":
-	need_pc = input("Do you want to check PC ODs also?[Y/N/y/n]\nchoice: ").lower() == 'y'
-	download_files(need_pc)
