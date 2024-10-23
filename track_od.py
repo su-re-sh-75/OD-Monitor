@@ -75,17 +75,18 @@ def process_file(pdf_path: str, filename: str, cmp_name: str, od_date: str, reg_
             page.save(jpeg_name, "JPEG")
         found = find_name(jpeg_name, reg_no)
         if found:
-            print(f"Register number is present in page {i+1} in {folder_name}.pdf")
+            # print(f"Register number is present in page {i+1} in {folder_name}.pdf")
             with open("OD.txt", 'r') as fd:
                 linenum = len(fd.readlines())
             with open("OD.txt", 'a') as fp:
                 text = f'\n{linenum}    {cmp_name}    {od_date}    {folder_name}.pdf'
                 fp.write(text)
             shutil.copy2(pdf_path, 'My ODs')
-            print(f"Stored {cmp_name} in OD.txt")
+            # print(f"Stored {cmp_name} in OD.txt")
             break
     if not found:
-        print(f"Register number is not present in {folder_name}.pdf")
+        pass
+        # print(f"Register number is not present in {folder_name}.pdf")
         
     with open("checked.txt", 'a') as fp:
         name = f'{pdf_path.split("\\")[1]}'

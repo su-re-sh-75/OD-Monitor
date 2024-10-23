@@ -84,7 +84,7 @@ def export_pdf(file_obj):
 		file = io.BytesIO()
 		downloader = MediaIoBaseDownload(file, request)
 		done = False
-		print(f"Downloading: {file_obj.get('name')}")
+		# print(f"Downloading: {file_obj.get('name')}")
 		while not done:
 			status, done = downloader.next_chunk()
 			# print(f"{int(status.progress() * 100)}%", end=' ')
@@ -109,7 +109,7 @@ def download_files(needed_pc):
 
 	for file in files:
 		if file.get('name') in file_set:
-			print(f'{file.get('name')} is already downloaded. So skipped.. ')
+			# print(f'{file.get('name')} is already downloaded. So skipped.. ')
 			continue
 		if not needed_pc and "PC" not in file.get('name').upper():
 			export_pdf(file)
